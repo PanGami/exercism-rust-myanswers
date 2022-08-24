@@ -1,15 +1,30 @@
-pub struct Clock;
-
+use std::fmt::{Display, Formatter, Result};
+const MINUTES_PER_DAY: i32 = 1440;
+const MINUTES_PER_HOUR: i32 = 60;
+#[derive(Debug, PartialEq, PartialOrd)]
+pub struct Clock {
+    minutes: i32,
+}
 impl Clock {
     pub fn new(hours: i32, minutes: i32) -> Self {
-        unimplemented!(
-            "Construct a new Clock from {} hours and {} minutes",
-            hours,
-            minutes
-        );
+        Self {
+            minutes: ((hours * MINUTES_PER_HOUR) + minutes).rem_euclid(MINUTES_PER_DAY),
+        }
     }
-
     pub fn add_minutes(&self, minutes: i32) -> Self {
-        unimplemented!("Add {} minutes to existing Clock time", minutes);
+        Self {
+            minutes: (self.minutes + minutes).rem_euclid(MINUTES_PER_DAY),
+        }
     }
 }
+impl Display for Clock {
+    fn fmt(&self, f: &mut Formatter) -> Result {
+        write!(
+            f,
+            "{:02}:{:02}",
+            self.minutes / MINUTES_PER_HOUR,
+            self.minutes % MINUTES_PER_HOUR
+        )
+    }
+}
+
